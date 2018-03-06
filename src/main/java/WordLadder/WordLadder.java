@@ -70,7 +70,7 @@ public class WordLadder{
         return false;
     }
 
-    public static void LadderGenerate(String w1, String w2, Set<String> dic){
+    public static Stack<String> LadderGenerate(String w1, String w2, Set<String> dic){
         Stack<String> result = new Stack<String>();
         if (IsAdjacent(w1, w2)){
             result.push(w1);
@@ -128,10 +128,12 @@ public class WordLadder{
                     break;
             }
         }
-        PrintLadder(result, w1, w2);
+        return result;
     }
 
     public static boolean IsValid(String w){
+        if (w=="")
+            return false;
         char[] ca = w.toCharArray();
         for (char ch : ca){
             if (!Character.isLetter(ch))
@@ -176,7 +178,8 @@ public class WordLadder{
 			System.out.println("The two words must be different.");
 			return;
         }
-        LadderGenerate(w1, w2, dic);
+        Stack<String> result = LadderGenerate(w1, w2, dic);
+        PrintLadder(result,w1,w2);
 
         /*
         Set<String> dic = DicGenerate(args[0]);
