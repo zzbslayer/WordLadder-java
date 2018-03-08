@@ -6,9 +6,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.util.*;
 
-import static WordLadder.WordLadder.IsAdjacent;
-import static WordLadder.WordLadder.IsExist;
-import static WordLadder.WordLadder.IsValid;
+import static WordLadder.WordLadder.*;
 
 /**
  * Unit test for simple App.
@@ -39,7 +37,8 @@ public class AppTest
     public void testIsAdjacent() {
         assertTrue( IsAdjacent("bag","bug"));
         assertTrue( IsAdjacent("cat", "cab"));
-        assertFalse( IsAdjacent( "bag", "bags"));
+        assertTrue( IsAdjacent( "bag", "bags"));
+        assertTrue( IsAdjacent( "bag", "bang"));
         assertFalse( IsAdjacent("money", "elephant"));
         assertFalse( IsAdjacent("money", ""));
         assertFalse( IsAdjacent("zoo", "zoo"));
@@ -62,4 +61,9 @@ public class AppTest
         assertFalse( IsValid("awgee"+'\t'));
         assertFalse( IsValid(""));
     }
+
+    /*
+    The correctness of LadderGenerate() cannot be tested.
+    Without running the programme, I cannot get the ladder.
+    */
 }

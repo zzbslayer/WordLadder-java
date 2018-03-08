@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class WordLadder{
+
     public static boolean IsAdjacent(String w1,String w2){
         int difference = 0;
 
@@ -25,7 +26,41 @@ public class WordLadder{
             if (difference==1)
                 return true;
         }
+
+        if (size1-size2==1) {
+            for (int i=0;i<size1;i++) {
+                String temp = w1.substring(0,i)+w1.substring(i+1);
+                if (temp.equals(w2))
+                    return true;
+            }
+            return false;
+        }
+        else if(size1-size2==-1) {
+            for (int i=0;i<size2;i++) {
+                String temp = w2.substring(0,i)+w2.substring(i+1);
+                if (temp.equals(w1))
+                    return true;
+            }
+            return false;
+        }
         return false;
+    }
+
+    public static boolean IsExist(Set<String> dic, String word){
+        if (dic.contains(word))
+            return true;
+        return false;
+    }
+
+    public static boolean IsValid(String w){
+        if (w=="")
+            return false;
+        char[] ca = w.toCharArray();
+        for (char ch : ca){
+            if (!Character.isLetter(ch))
+                return false;
+        }
+        return true;
     }
 
     public static void PrintStack(Stack<String> s){
@@ -45,12 +80,6 @@ public class WordLadder{
             System.out.println("No word ladder from " + w2 + " back to " + w1 + ".");
     }
 
-    public static void PrintSet(Set<String> s){
-        for (String w : s){
-            System.out.println(w);
-        }
-    }
-
     public static Set<String> DicGenerate(String filename)throws IOException{
         Set<String> result = new HashSet<String>();
         
@@ -64,12 +93,6 @@ public class WordLadder{
         return result;
     }
 
-    public static boolean IsExist(Set<String> dic, String word){
-        if (dic.contains(word))
-            return true;
-        return false;
-    }
-
     public static Stack<String> LadderGenerate(String w1, String w2, Set<String> dic){
         Stack<String> result = new Stack<String>();
         if (IsAdjacent(w1, w2)){
@@ -77,69 +100,64 @@ public class WordLadder{
             result.push(w2);
         }
         else{
-            boolean found = false;
             Queue<Stack<String>> BFS = new LinkedList<Stack<String>>();
             Stack<String> temp = new Stack<String>();
             temp.push(w2);
             BFS.offer(temp);
-
-            int size = w2.length();
             
-            Set<String> smalldic = new HashSet<String>();
+            /*Set<String> smalldic = new HashSet<String>();
 
             for(String word : dic){
                 if (word.length()==size)
                     smalldic.add(word);
-            }
+            }*/
 
             //PrintSet(smalldic);
 
             while(!BFS.isEmpty()){
                 temp = BFS.poll();
                 String top = temp.peek();
-                //System.out.println(top);
                 int top_size = top.length();
-                smalldic.remove(w2);
-                for (int i=0;i<top_size;i++){
-                    String neighbour;
-                    for (char ch='a';ch<='z';ch++){
-                        neighbour = top.substring(0,i)+ch+top.substring(i+1,top_size);
-                        //System.out.println("neighbour : "+neighbour);
-                        if(smalldic.contains(neighbour)){
-                            //System.out.println('\t'+neighbour);
-                            Stack<String> copy = (Stack<String>)temp.clone();
-                            copy.push(neighbour);
-                            //PrintStack(temp);
-                            //PrintStack(copy);
-                            if (IsAdjacent(neighbour, w1)){
-                                copy.push(w1);
-                                result = copy;
-                                found = true;
-                                break;
+                String neighbour="";
+                for (int i=0;i<=top_size;i++) {
+                    for (char ch = 'a'; ch <= 'z'; ch++) {
+                        for (int j=0;j<3;j++){
+                            if (j==0){
+                                if (i<top_size)
+                                    neighbour = top.substring(0, i) + ch + top.substring(i + 1, top_size);
+                                else
+                                    break;
                             }
-                            BFS.offer(copy);
-                            smalldic.remove(neighbour);
+                            else if (j==1)
+                                neighbour = top.substring(0,i)+ ch + top.substring(i,top_size);
+                            else{
+                                if (i==0)
+                                    neighbour = top.substring(1,top_size);
+                                else if (i==top_size-1)
+                                    neighbour = top.substring(0,top_size-1);
+                                else if (i==top_size)
+                                    break;
+                                else
+                                    neighbour = top.substring(0,i-1) + top.substring(i,top_size);
+                            }
+                            if (dic.contains(neighbour)) {
+                                Stack<String> copy = (Stack<String>) temp.clone();
+                                copy.push(neighbour);
+
+                                if (IsAdjacent(neighbour, w1)) {
+                                    copy.push(w1);
+                                    result = copy;
+                                    return result;
+                                }
+                                BFS.offer(copy);
+                                dic.remove(neighbour);
+                            }
                         }
                     }
-                    if (found)
-                        break;
                 }
-                if (found)
-                    break;
             }
         }
         return result;
-    }
-
-    public static boolean IsValid(String w){
-        if (w=="")
-            return false;
-        char[] ca = w.toCharArray();
-        for (char ch : ca){
-            if (!Character.isLetter(ch))
-                return false;
-        }
-        return true;
     }
 
     public static void main(String args[])throws IOException{
@@ -166,10 +184,6 @@ public class WordLadder{
         w1 = w1.toLowerCase();
         w2 = w2.toLowerCase();
 
-        if (w2.length()!=w1.length()){
-            System.out.println("The two words must be the same length.");
-            return;
-        }
         if (!IsExist(dic,w1)||!IsExist(dic,w2)){
 			System.out.println("The two words must be found in the dictionary.");
 			return;
@@ -190,4 +204,5 @@ public class WordLadder{
             */
         
     }
+
 }
