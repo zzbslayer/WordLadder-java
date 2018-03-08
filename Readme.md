@@ -6,9 +6,9 @@
 For example
 
         ~ javac WordLadder.java
-        ~ java WordLadder smalldict1.txt bow but
-        A ladder from but back to bow:
-        bow bog bug but
+        ~ java WordLadder dictionary.txt keep apple
+        A ladder from apple back to keep:
+        keep kelp help hele hole mole amole ample apple 
 
 or just set the configuration of program arguments in idea.
 
